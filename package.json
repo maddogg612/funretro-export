@@ -10,6 +10,6 @@
   "author": "Julius Morkūnas",
   "license": "MIT",
   "dependencies": {
-    "playwright": "^1.3.0"
+    "playwright": "^1.21.0-alpha-mar-10-2022"
   }
 }
