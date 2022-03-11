@@ -6,14 +6,16 @@ const { exit } = require('process');
 //console.log(process.argv) //array of 4 elements, index 2 = url index 3 = file save location, consider adding index 4 (file type)
 const [url, extension] = process.argv.slice(2); 
 
-console.log('this is the extension', extension)
-
 if (!url) {
     throw 'Please provide a URL as the first argument.';
 }
 
-if (!extension || extension !== '.txt' || extension !== '.csv') {
-    throw 'Please provide a proper extension: .txt or .csv'
+if (!extension) {
+    throw 'Please provide an extension for the export file'
+}
+
+if (extension !== '.txt' && extension !== '.csv') {
+   throw 'Please provide a proper extension: .txt or .csv'
 }
 
 //this generates the data
