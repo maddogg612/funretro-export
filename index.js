@@ -3,7 +3,6 @@ const path = require('path');
 const { chromium } = require('playwright');
 const { exit } = require('process');
 
-//console.log(process.argv) //array of 4 elements, index 2 = url index 3 = file save location, consider adding index 4 (file type)
 const [url, extension] = process.argv.slice(2); 
 
 if (!url) {
@@ -35,6 +34,7 @@ async function run() {
     let parsedText = boardTitle + '\n\n';
 
     const columns = await page.$$('.easy-card-list');
+    console.table(columns);
 
     for (let i = 0; i < columns.length; i++) {
         const columnTitle = await columns[i].$eval('.column-header', (node) => node.innerText.trim());
@@ -46,7 +46,9 @@ async function run() {
         for (let i = 0; i < messages.length; i++) {
             const messageText = await messages[i].$eval('.easy-card-main .easy-card-main-content .text', (node) => node.innerText.trim());
             const votes = await messages[i].$eval('.easy-card-votes-container .easy-badge-votes', (node) => node.innerText.trim());
+            if (Number(votes) >0) {
             parsedText += `- ${messageText} (${votes})` + '\n';
+            }
         }
 
         if (messages.length) {
