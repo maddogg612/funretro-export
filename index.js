@@ -13,12 +13,15 @@ if (!extension) {
     throw 'Please provide an extension for the export file'
 }
 
-if (extension !== '.txt' && extension !== '.csv') {
-   throw 'Please provide a proper extension: .txt or .csv'
+let outputFormat = ['.txt','.csv']
+
+if (!outputFormat.includes(extension)) {
+   throw `Please provide a proper extension: ${outputFormat}`
 }
 
 //this generates the data
 async function run() {
+
     const browser = await chromium.launch();
     const page = await browser.newPage();
 
@@ -33,19 +36,28 @@ async function run() {
 
     let parsedText = boardTitle + '\n\n';
 
+
     const columns = await page.$$('.easy-card-list');
-    console.table(columns);
 
     for (let i = 0; i < columns.length; i++) {
         const columnTitle = await columns[i].$eval('.column-header', (node) => node.innerText.trim());
+        //console.log('this is the column title', columnTitle)
 
+        //title should always be present regardless of messages or not 
+
+        //messages should be filered first before adding it 
         const messages = await columns[i].$$('.easy-board-front');
+        //console.log('this is the messages', messages)
+
         if (messages.length) {
             parsedText += columnTitle + '\n';
         }
+       
+
         for (let i = 0; i < messages.length; i++) {
             const messageText = await messages[i].$eval('.easy-card-main .easy-card-main-content .text', (node) => node.innerText.trim());
             const votes = await messages[i].$eval('.easy-card-votes-container .easy-badge-votes', (node) => node.innerText.trim());
+
             if (Number(votes) >0) {
             parsedText += `- ${messageText} (${votes})` + '\n';
             }
@@ -62,8 +74,6 @@ async function run() {
 
 //function to write the new file that will save
 function writeToFile(extension, data) {
-    //console.log(data) //data is just the information being saved in the board
-    //const resolvedPath = path.resolve(filePath || `../${data.split('\n')[0].replace('/', '')}.txt`);
     const resolvedPath = path.resolve(`../${data.split('\n')[0].replace('/', '').split(" ").join("")}${extension}`);
     fs.writeFile(resolvedPath, data, (error) => {
         if (error) {
@@ -77,6 +87,7 @@ function writeToFile(extension, data) {
 
 function handleError(error) {
     console.error(error);
+    process.exit();
 }
 
 run().then((data) => writeToFile(extension, data)).catch(handleError);
