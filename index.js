@@ -3,12 +3,20 @@ const path = require('path');
 const { chromium } = require('playwright');
 const { exit } = require('process');
 
-const [url, file] = process.argv.slice(2);
+//console.log(process.argv) //array of 4 elements, index 2 = url index 3 = file save location, consider adding index 4 (file type)
+const [url, extension] = process.argv.slice(2); 
+
+console.log('this is the extension', extension)
 
 if (!url) {
     throw 'Please provide a URL as the first argument.';
 }
 
+if (!extension || extension !== '.txt' || extension !== '.csv') {
+    throw 'Please provide a proper extension: .txt or .csv'
+}
+
+//this generates the data
 async function run() {
     const browser = await chromium.launch();
     const page = await browser.newPage();
@@ -47,8 +55,12 @@ async function run() {
     return parsedText;
 }
 
-function writeToFile(filePath, data) {
-    const resolvedPath = path.resolve(filePath || `../${data.split('\n')[0].replace('/', '')}.txt`);
+
+//function to write the new file that will save
+function writeToFile(extension, data) {
+    //console.log(data) //data is just the information being saved in the board
+    //const resolvedPath = path.resolve(filePath || `../${data.split('\n')[0].replace('/', '')}.txt`);
+    const resolvedPath = path.resolve(`../${data.split('\n')[0].replace('/', '').split(" ").join("")}${extension}`);
     fs.writeFile(resolvedPath, data, (error) => {
         if (error) {
             throw error;
@@ -63,4 +75,4 @@ function handleError(error) {
     console.error(error);
 }
 
-run().then((data) => writeToFile(file, data)).catch(handleError);
+run().then((data) => writeToFile(extension, data)).catch(handleError);
