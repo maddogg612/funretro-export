@@ -38,10 +38,12 @@ async function run() {
 
 
     const columns = await page.$$('.easy-card-list');
+    const columnTitleArray = []
+    const messagesObject = {}
 
     for (let i = 0; i < columns.length; i++) {
         const columnTitle = await columns[i].$eval('.column-header', (node) => node.innerText.trim());
-        //console.log('this is the column title', columnTitle)
+        columnTitleArray.push(columnTitle)
 
         //title should always be present regardless of messages or not 
 
@@ -61,6 +63,14 @@ async function run() {
             if (Number(votes) >0) {
             parsedText += `- ${messageText} (${votes})` + '\n';
             }
+
+            if (Number(votes) >0) {
+            if(!messagesObject[columnTitle]) {
+                messagesObject[columnTitle] = [`${messageText} (${votes})` + '\n']
+            } else {
+                messagesObject[columnTitle].push([`${messageText} (${votes})` + '\n'])
+            }
+        }
         }
 
         if (messages.length) {
@@ -68,11 +78,14 @@ async function run() {
         }
     }
 
+    console.log(columnTitleArray, messagesObject)
     return parsedText;
 }
 
 
-//function to write the new file that will save
+
+
+//function to write the new file that will save to your computer
 function writeToFile(extension, data) {
     const resolvedPath = path.resolve(`../${data.split('\n')[0].replace('/', '').split(" ").join("")}${extension}`);
     fs.writeFile(resolvedPath, data, (error) => {
