@@ -42,7 +42,7 @@ async function run() {
     const messagesObject = {}
     let maxLength = 0
 
-    //populates my column Title array and messages object
+    //populates columnTitleArray and messagesObject
     for (let i = 0; i < columns.length; i++) {
         const columnTitle = await columns[i].$eval('.column-header', (node) => node.innerText.trim());
         columnTitleArray.push(columnTitle)
@@ -62,7 +62,7 @@ async function run() {
 
     }
 
-    //creates column Titles into parseText
+    //adds column Titles into parseText
     for (let i = 0; i < columnTitleArray.length; i++) {
         parsedText += columnTitleArray[i]
         if (i === columnTitleArray.length - 1) {
@@ -72,7 +72,7 @@ async function run() {
         }
     }
 
-  //divides message into columns into parseText
+    //divides message into columns and add to parseText
     for (let i = 0; i < maxLength; i++) {
         for (let j = 0; j < columnTitleArray.length; j++) {
 

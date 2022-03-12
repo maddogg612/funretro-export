@@ -12,13 +12,15 @@ It's required to have [npm](https://www.npmjs.com/get-npm) installed locally to 
 git clone https://github.com/julykaz/funretro-export.git
 cd funretro-export
 npm install
-npm start -- "http://funretro.io/board..." "../exported-file.txt"
+npm start -- "url of retro board" "extension (.txt or .csv)"
+
+example - npm start -- "https://easyretro.io/publicboard/CGvRainS7bR2EGjqtYcJFwq1w5F3/0d92f1f5-a1f9-4d28-bb69-3139d0772a8a" ".csv" 
 ```
 
-## TODO
+## COMPLETED
 
-- Export card comments
-- More export options (PDF, CSV)
+- Acceptance Criteria
+- Able to specific extension you want to save on the command line, variable within the source code that would allow for addition of more extensions
 
 ## Licensing
 
