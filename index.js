@@ -42,29 +42,17 @@ async function run() {
     const messagesObject = {}
     let maxLength = 0
 
+    //populates my column Title array and messages object
     for (let i = 0; i < columns.length; i++) {
         const columnTitle = await columns[i].$eval('.column-header', (node) => node.innerText.trim());
         columnTitleArray.push(columnTitle)
         messagesObject[columnTitle] = []
 
-        //title should always be present regardless of messages or not 
-
-        //messages should be filered first before adding it 
         const messages = await columns[i].$$('.easy-board-front');
-        //console.log('this is the messages', messages)
-
-        // if (messages.length) {
-        //     parsedText += columnTitle + '\n';
-        // }
        
-
         for (let i = 0; i < messages.length; i++) {
             const messageText = await messages[i].$eval('.easy-card-main .easy-card-main-content .text', (node) => node.innerText.trim());
             const votes = await messages[i].$eval('.easy-card-votes-container .easy-badge-votes', (node) => node.innerText.trim());
-
-            // if (Number(votes) >0) {
-            // parsedText += `- ${messageText} (${votes})` + '\n';
-            // }
 
             if (Number(votes) >0) {
                 messagesObject[columnTitle].push([`${messageText} (${votes})`])
@@ -72,14 +60,9 @@ async function run() {
         }
         }
 
-        // if (messages.length) {
-        //     parsedText += '\n';
-        // }
     }
 
-    console.log(columnTitleArray, messagesObject,maxLength)
-
-    //creates column Titles
+    //creates column Titles into parseText
     for (let i = 0; i < columnTitleArray.length; i++) {
         parsedText += columnTitleArray[i]
         if (i === columnTitleArray.length - 1) {
@@ -89,7 +72,7 @@ async function run() {
         }
     }
 
-  //divides message into columns
+  //divides message into columns into parseText
     for (let i = 0; i < maxLength; i++) {
         for (let j = 0; j < columnTitleArray.length; j++) {
 
