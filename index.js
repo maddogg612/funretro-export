@@ -40,10 +40,12 @@ async function run() {
     const columns = await page.$$('.easy-card-list');
     const columnTitleArray = []
     const messagesObject = {}
+    let maxLength = 0
 
     for (let i = 0; i < columns.length; i++) {
         const columnTitle = await columns[i].$eval('.column-header', (node) => node.innerText.trim());
         columnTitleArray.push(columnTitle)
+        messagesObject[columnTitle] = []
 
         //title should always be present regardless of messages or not 
 
@@ -51,34 +53,59 @@ async function run() {
         const messages = await columns[i].$$('.easy-board-front');
         //console.log('this is the messages', messages)
 
-        if (messages.length) {
-            parsedText += columnTitle + '\n';
-        }
+        // if (messages.length) {
+        //     parsedText += columnTitle + '\n';
+        // }
        
 
         for (let i = 0; i < messages.length; i++) {
             const messageText = await messages[i].$eval('.easy-card-main .easy-card-main-content .text', (node) => node.innerText.trim());
             const votes = await messages[i].$eval('.easy-card-votes-container .easy-badge-votes', (node) => node.innerText.trim());
 
-            if (Number(votes) >0) {
-            parsedText += `- ${messageText} (${votes})` + '\n';
-            }
+            // if (Number(votes) >0) {
+            // parsedText += `- ${messageText} (${votes})` + '\n';
+            // }
 
             if (Number(votes) >0) {
-            if(!messagesObject[columnTitle]) {
-                messagesObject[columnTitle] = [`${messageText} (${votes})` + '\n']
-            } else {
-                messagesObject[columnTitle].push([`${messageText} (${votes})` + '\n'])
-            }
+                messagesObject[columnTitle].push([`${messageText} (${votes})`])
+                maxLength = Math.max(maxLength, messagesObject[columnTitle].length)
         }
         }
 
-        if (messages.length) {
-            parsedText += '\n';
+        // if (messages.length) {
+        //     parsedText += '\n';
+        // }
+    }
+
+    console.log(columnTitleArray, messagesObject,maxLength)
+
+    //creates column Titles
+    for (let i = 0; i < columnTitleArray.length; i++) {
+        parsedText += columnTitleArray[i]
+        if (i === columnTitleArray.length - 1) {
+            parsedText += "\n"
+        } else {
+            parsedText += ' | '
         }
     }
 
-    console.log(columnTitleArray, messagesObject)
+  //divides message into columns
+    for (let i = 0; i < maxLength; i++) {
+        for (let j = 0; j < columnTitleArray.length; j++) {
+
+            if (!messagesObject[columnTitleArray[j]][i]) {
+                parsedText += "     "
+            } else {
+                parsedText += messagesObject[columnTitleArray[j]][i]
+            }
+            if (j === columnTitleArray.length - 1) {
+                parsedText += "\n"
+            } else {
+                parsedText += ' | '
+            }
+        }
+    }
+
     return parsedText;
 }
 
