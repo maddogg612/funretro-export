@@ -34,7 +34,7 @@ async function run() {
         throw 'Board title does not exist. Please check if provided URL is correct.'
     }
 
-    let parsedText = boardTitle + '\n\n';
+    let parsedText = "";
 
 
     const columns = await page.$$('.easy-card-list');
@@ -68,7 +68,7 @@ async function run() {
         if (i === columnTitleArray.length - 1) {
             parsedText += "\n"
         } else {
-            parsedText += ' | '
+            parsedText += ','
         }
     }
 
@@ -77,19 +77,19 @@ async function run() {
         for (let j = 0; j < columnTitleArray.length; j++) {
 
             if (!messagesObject[columnTitleArray[j]][i]) {
-                parsedText += "     "
+                parsedText += ""
             } else {
                 parsedText += messagesObject[columnTitleArray[j]][i]
             }
             if (j === columnTitleArray.length - 1) {
                 parsedText += "\n"
             } else {
-                parsedText += ' | '
+                parsedText += ','
             }
         }
     }
 
-    return parsedText;
+    return [boardTitle ,parsedText];
 }
 
 
@@ -97,8 +97,8 @@ async function run() {
 
 //function to write the new file that will save to your computer
 function writeToFile(extension, data) {
-    const resolvedPath = path.resolve(`../${data.split('\n')[0].replace('/', '').split(" ").join("")}${extension}`);
-    fs.writeFile(resolvedPath, data, (error) => {
+    const resolvedPath = path.resolve(`../${data[0].split(" ").join("")}${extension}`);
+    fs.writeFile(resolvedPath, data[1], (error) => {
         if (error) {
             throw error;
         } else {
