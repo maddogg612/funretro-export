@@ -57,7 +57,7 @@ async function run() {
             if (Number(votes) >0) {
                 messagesObject[columnTitle].push([`${messageText} (${votes})`])
                 maxLength = Math.max(maxLength, messagesObject[columnTitle].length)
-        }
+            }
         }
 
     }
@@ -81,6 +81,7 @@ async function run() {
             } else {
                 parsedText += messagesObject[columnTitleArray[j]][i]
             }
+            
             if (j === columnTitleArray.length - 1) {
                 parsedText += "\n"
             } else {
